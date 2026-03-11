@@ -1,1 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Login QR Ujian</title>
 
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f9;
+margin:0;
+text-align:center;
+}
+
+.header{
+background:#2c3e50;
+color:white;
+padding:15px;
+font-size:20px;
+}
+
+#reader{
+width:350px;
+margin:40px auto;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+Login Ujian Dengan QR
+</div>
+
+<h2>Scan QR Login</h2>
+
+<div id="reader"></div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyAMgyNIas-WYNuSaBWRu3QbxfUCh_qCx88",
+authDomain: "ujian-sekolah-c6518.firebaseapp.com",
+databaseURL: "https://ujian-sekolah-c6518-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId: "ujian-sekolah-c6518",
+storageBucket: "ujian-sekolah-c6518.firebasestorage.app",
+messagingSenderId: "535101073111",
+appId: "1:535101073111:web:d6d8ef4dd147ecc63e7292"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+
+function onScanSuccess(uid){
+
+get(ref(db,"siswa/"+uid)).then((snapshot)=>{
+
+if(snapshot.exists()){
+
+const data=snapshot.val();
+
+alert(
+"Login berhasil\n\n"+
+"Nama: "+data.nama+
+"\nKelas: "+data.kelas
+);
+
+localStorage.setItem("uid",uid);
+
+window.location="ujian.html";
+
+}else{
+
+alert("QR tidak valid");
+
+}
+
+});
+
+}
+
+let scanner=new Html5QrcodeScanner(
+"reader",
+{fps:10,qrbox:250}
+);
+
+scanner.render(onScanSuccess);
+
+</script>
+
+</body>
+</html>
